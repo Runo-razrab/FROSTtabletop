@@ -1,1 +1,52 @@
 https://runo-razrab.github.io/FROSTtabletop/
+
+<input type="file" id="imageInput" accept="image/*" />
+<canvas id="canvas"></canvas>
+
+<script>
+  // Код для загрузки изображения
+  const imageInput = document.getElementById('imageInput');
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let img = new Image();
+
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        img = new Image();
+        img.onload = drawImageWithGrid;
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Код для наложения сетки
+  let rows = 10, cols = 10;
+
+  function drawImageWithGrid() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+
+    const cellWidth = canvas.width / cols;
+    const cellHeight = canvas.height / rows;
+
+    ctx.strokeStyle = 'red';
+    for (let i = 1; i < cols; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * cellWidth, 0);
+      ctx.lineTo(i * cellWidth, canvas.height);
+      ctx.stroke();
+    }
+    for (let j = 1; j < rows; j++) {
+      ctx.beginPath();
+      ctx.moveTo(0, j * cellHeight);
+      ctx.lineTo(canvas.width, j * cellHeight);
+      ctx.stroke();
+    }
+  }
+</script>
